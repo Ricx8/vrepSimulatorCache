@@ -1,3 +1,15 @@
+function split(str, character)
+  result = {}
+
+  index = 1
+  for s in string.gmatch(str, "[^"..character.."]+") do
+    result[index] = s
+    index = index + 1
+  end
+
+  return result
+end
+
 function sysCall_init()
     -- do some initialization here:
 
@@ -26,8 +38,10 @@ function sysCall_init()
     --
     -- Refer also to sim.getCollisionhandle, sim.getDistanceHandle, sim.getIkGroupHandle, etc.
 
+    fileName = "cacheSimulation.txt"
+
     -- Open open a file in write mode
-    outFile = io.open("cacheSimulation.txt", "w")
+    outFile = io.open(fileName, "w")
     io.output(outFile)
     io.write("INIT\n")
 
@@ -59,6 +73,14 @@ end
 function sysCall_cleanup()
     -- do some clean-up here
     io.close(outFile)
+
+    oldData
+    cacheFile = io.open(fileName, "r")
+    for line in cacheFile:lines() do
+      print(line)
+    end
+
+    io.close(cacheFile)
 end
 
 -- You can define additional system calls here:
