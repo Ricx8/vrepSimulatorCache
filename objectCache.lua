@@ -39,15 +39,16 @@ function sysCall_init()
     -- Refer also to sim.getCollisionhandle, sim.getDistanceHandle, sim.getIkGroupHandle, etc.
 
     fileName = "cacheSimulation.txt"
+    oldTime = 0
 
     -- Open open a file in write mode
     outFile = io.open(fileName, "w")
     io.output(outFile)
-    io.write("INIT\n")
+    --io.write("INIT\n")
 
     -- Get joints handles
     handle = sim.getObjectHandle("backLLeg_Joint01")
-    io.write(handle .. "\n")
+    --io.write(handle .. "\n")
 end
 
 function sysCall_actuation()
@@ -67,19 +68,28 @@ function sysCall_sensing()
     -- Get joints angles
     jointAngle = sim.getJointPosition(handle)
 
-    io.write(currentTime .. ", " .. jointAngle .. "\n")
+    io.write(currentTime .. ";" .. jointAngle .. "\n")
 end
 
 function sysCall_cleanup()
     -- do some clean-up here
     io.close(outFile)
 
-    oldData
-    cacheFile = io.open(fileName, "r")
-    for line in cacheFile:lines() do
-      print(line)
+    previousData = {0, 0, 0}
+    outFile = io.open(fileName, "r")
+    cacheFile = io.open(fileName:gsub(".txt", ".cache"), "w")
+    io.output(cacheFile)
+
+    for line in outFile:lines() do
+      local tmp = split(line, ";")
+      subTime = tmp[1] - previousData[1]
+
+      io.write(subTime .. ";" .. previousData[2] .. "\n")
+
+      previousData = tmp
     end
 
+    io.close(outFile)
     io.close(cacheFile)
 end
 
