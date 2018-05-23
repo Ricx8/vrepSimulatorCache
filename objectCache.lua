@@ -10,11 +10,23 @@ function split(str, character)
   return result
 end
 
+function invAngle(a)
+  local maxV = 180
+  local result = maxV - a
+
+  if (result < 0) then
+    result = result * -1
+  end
+
+  return result
+end
+
 function sysCall_init()
     -- do some initialization here:
 
     fileName = "cacheSimulation.txt"
     listOfjoints = {"backLLeg_Joint01", "backLLeg_Joint02", "backLLeg_Joint03"}
+    invList = {true, false, true}
     handleList = {}
 
     -- Open open a file in write mode
@@ -59,16 +71,32 @@ function sysCall_cleanup()
     -- do some clean-up here
     io.close(outFile)
 
-    previousData = {0, 0, 0}
+    previousData = {}
+    for i=1, #listOfjoints+1, 1 do
+      previousData[i] = 0
+    end
+
+
     outFile = io.open(fileName, "r")
     cacheFile = io.open(fileName:gsub(".txt", ".cache"), "w")
     io.output(cacheFile)
 
     for line in outFile:lines() do
       local tmp = split(line, ";")
-      subTime = tmp[1] - previousData[1]
+      local outLine = tmp[1] - previousData[1]
 
-      io.write(subTime .. ";" .. previousData[2] .. "\n")
+      for count=2, #tmp, 1 do
+        local angle = 0
+        if (invList[count-1]) then
+          angle = invAngle(math.floor(math.deg(previousData[count] + 3) + 8.14))
+        else
+          angle = math.floor(math.deg(previousData[count] + 3) + 8.14)
+        end
+
+        outLine = outLine..";"..angle
+      end
+
+      io.write(outLine .. "\n")
 
       previousData = tmp
     end
