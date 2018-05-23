@@ -26,7 +26,8 @@ function sysCall_init()
 
     fileName = "cacheSimulation.txt"
     listOfjoints = {"backLLeg_Joint01", "backLLeg_Joint02", "backLLeg_Joint03"}
-    invList = {true, false, true}
+    invList = {false, false, true}
+    offsetList = {true, false, false}
     handleList = {}
 
     -- Open open a file in write mode
@@ -59,6 +60,7 @@ function sysCall_sensing()
     -- Get joints angles
     --jointAngle = sim.getJointPosition(handle)
     for count=1, #listOfjoints, 1 do
+      -- local joint = math.floor(math.deg(sim.getJointPosition(handleList[count]) + 3) + 8.14)
       local joint = sim.getJointPosition(handleList[count])
       outLine = outLine..";"..joint
     end
@@ -91,6 +93,10 @@ function sysCall_cleanup()
           angle = invAngle(math.floor(math.deg(previousData[count] + 3) + 8.14))
         else
           angle = math.floor(math.deg(previousData[count] + 3) + 8.14)
+        end
+
+        if (offsetList[count-1]) then
+          angle = angle - 90
         end
 
         outLine = outLine..";"..angle
