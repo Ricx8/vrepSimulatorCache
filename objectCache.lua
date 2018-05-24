@@ -73,26 +73,21 @@ function sysCall_cleanup()
     -- do some clean-up here
     io.close(outFile)
 
-    previousData = {}
-    for i=1, #listOfjoints+1, 1 do
-      previousData[i] = 0
-    end
-
-
     outFile = io.open(fileName, "r")
     cacheFile = io.open(fileName:gsub(".txt", ".cache"), "w")
     io.output(cacheFile)
 
     for line in outFile:lines() do
       local tmp = split(line, ";")
-      local outLine = tmp[1] - previousData[1]
+      local outLine = tmp[1]
 
       for count=2, #tmp, 1 do
         local angle = 0
+
         if (invList[count-1]) then
-          angle = invAngle(math.floor(math.deg(previousData[count] + 3) + 8.14))
+          angle = invAngle(math.floor(math.deg(tmp[count] + 3) + 8.14))
         else
-          angle = math.floor(math.deg(previousData[count] + 3) + 8.14)
+          angle = math.floor(math.deg(tmp[count] + 3) + 8.14)
         end
 
         if (offsetList[count-1]) then
@@ -102,57 +97,9 @@ function sysCall_cleanup()
         outLine = outLine..";"..angle
       end
 
-      io.write(outLine .. "\n")
-
-      previousData = tmp
+      io.write(outLine.."\n")
     end
 
     io.close(outFile)
     io.close(cacheFile)
 end
-
--- You can define additional system calls here:
---[[
-function sysCall_suspend()
-end
-
-function sysCall_resume()
-end
-
-function sysCall_dynCallback(inData)
-end
-
-function sysCall_jointCallback(inData)
-    return outData
-end
-
-function sysCall_contactCallback(inData)
-    return outData
-end
-
-function sysCall_beforeCopy(inData)
-    for key,value in pairs(inData.objectHandles) do
-        print("Object with handle "..key.." will be copied")
-    end
-end
-
-function sysCall_afterCopy(inData)
-    for key,value in pairs(inData.objectHandles) do
-        print("Object with handle "..key.." was copied")
-    end
-end
-
-function sysCall_beforeDelete(inData)
-    for key,value in pairs(inData.objectHandles) do
-        print("Object with handle "..key.." will be deleted")
-    end
-    -- inData.allObjects indicates if all objects in the scene will be deleted
-end
-
-function sysCall_afterDelete(inData)
-    for key,value in pairs(inData.objectHandles) do
-        print("Object with handle "..key.." was deleted")
-    end
-    -- inData.allObjects indicates if all objects in the scene were deleted
-end
---]]
