@@ -25,9 +25,12 @@ function sysCall_init()
     -- do some initialization here:
 
     fileName = "cacheSimulation.txt"
-    listOfjoints = {"backLLeg_Joint01", "backLLeg_Joint02", "backLLeg_Joint03"}
-    invList = {false, false, true}
-    offsetList = {true, false, false}
+    listOfjoints = {"backRLeg_Joint01", "backRLeg_Joint02", "backRLeg_Joint03", "backLLeg_Joint01", "backLLeg_Joint02", "backLLeg_Joint03", "frontRLeg_Joint01", "frontRLeg_Joint02", "frontRLeg_Joint03", "frontLLeg_Joint01", "frontLLeg_Joint02", "frontLLeg_Joint03"}
+
+    -- backRLeg= inv:txx, off:xxx; backLLeg= inv:fxt, off: txf; frontRLeg= inv:txx, off:xxx; frontLeftLeg= inv: fxt, off:txf
+    --           {          BR         }{         BL        }{          FR        }{        FL       }
+    invList    = {true,   false,  false, false, false, true,  true,   false, false, false, false, true}
+    offsetList = {false,  false,  false, true,  false, false, true,  false, false, true,  false, false}
     handleList = {}
 
     -- Open open a file in write mode
@@ -93,6 +96,8 @@ function sysCall_cleanup()
         if (offsetList[count-1]) then
           angle = angle - 90
         end
+
+        angle = math.abs(angle)
 
         outLine = outLine..";"..angle
       end
