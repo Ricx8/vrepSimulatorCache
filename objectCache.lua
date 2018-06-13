@@ -29,7 +29,7 @@ function sysCall_init()
 
     -- backRLeg= inv:txx, off:xxx; backLLeg= inv:fxt, off: txf; frontRLeg= inv:txx, off:xxx; frontLeftLeg= inv: fxt, off:txf
     --           {            BR          }{         BL        }{          FR        }{         FL         }
-    invList    = {false,    false,  true,  false,  false,  true, true,   false,  true, false,  false,  true}
+    invList    = {true,    false,  false,  false,  false,  true, true,   false,  false, false,  false,  true}
     offsetList = {100,      0,      0,      100,    0,      0,    100,    0,      0,      100,    0,      0}
     handleList = {}
 
